@@ -208,3 +208,10 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
+
+## Active Technologies
+- TypeScript with Next.js 16+ (App Router) + Next.js, React, Tailwind CSS, Better Auth, Lucide React icons (001-modern-frontend-ui)
+- N/A (frontend only - data storage handled by backend API) (001-modern-frontend-ui)
+
+## Recent Changes
+- 001-modern-frontend-ui: Added TypeScript with Next.js 16+ (App Router) + Next.js, React, Tailwind CSS, Better Auth, Lucide React icons

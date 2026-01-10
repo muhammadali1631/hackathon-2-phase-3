@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+node_modules
+
+# Production builds
+.next/
+
+
+
+
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Next.js
+.next/
+.cache/
+
+# Local files
+.env.local
+.env.production.local
+.env.development.local

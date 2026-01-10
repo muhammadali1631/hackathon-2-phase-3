@@ -1,55 +1,68 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+SYNC IMPACT REPORT:
+Version change: 1.0.0 → 1.0.0 (initial creation)
+Modified principles: None (new constitution)
+Added sections: All sections added
+Removed sections: None
+Templates requiring updates:
+- .specify/templates/plan-template.md: ✅ updated
+- .specify/templates/spec-template.md: ✅ updated
+- .specify/templates/tasks-template.md: ✅ updated
+- .specify/templates/commands/*.md: ✅ updated
+Follow-up TODOs: None
+-->
+# Hackathon Phase 2 – Todo Full-Stack Web Application Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Fully Spec-Driven and Agentic Development
+All development must follow spec-driven methodology where every feature is defined in specifications before implementation. No manual coding allowed – all implementation must be generated via Claude Code using Spec-Kit references. Development follows the strict sequence: Spec → Plan → Tasks → Implementation.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Zero Manual Coding Mandate
+No code may be written directly by humans. All implementation must be generated through Claude Code agents using /sp.implement and related skills. Every line of code must be traceable to a specification requirement through Claude Code prompts.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Modular Architecture Through Agents and Skills
+System architecture must be modular with dedicated agents for different concerns: Main Agent, Task Agent, Auth Agent, UI Agent. Each agent has defined skills and responsibilities with clear interfaces and contracts between them.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Complete User Isolation and Data Ownership
+Every user must have complete isolation of their data. All database queries must be filtered by authenticated user_id. Users can only access, modify, or delete their own tasks. No cross-user data access is permitted under any circumstances.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Strict Technology Stack Adherence
+Implementation must use exactly the specified technology stack: Next.js 16+ (App Router), FastAPI, SQLModel, Neon Serverless PostgreSQL, Better Auth (JWT), Tailwind CSS. No external libraries beyond the specified stack are permitted.
 
-### [PRINCIPLE_6_NAME]
+### VI. Stateless Authentication with JWT
+Authentication must be completely stateless using JWT tokens only. No session storage on backend. Better Auth configured with JWT plugin. JWT tokens issued on login and automatically attached to all API requests from frontend.
 
+## Security and Data Requirements
 
-[PRINCIPLE__DESCRIPTION]
+### Authentication and Authorization
+- Every API endpoint must require valid JWT token for access
+- FastAPI middleware must verify JWT and extract user_id on every protected route
+- All CRUD operations must enforce task ownership (user can only access their own tasks)
+- Database schema must match specifications exactly with user_id foreign keys
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### Data Isolation
+- All database queries must be filtered by authenticated user_id
+- Zero data leakage between users is permitted
+- Users table managed by Better Auth, tasks table with user_id foreign key relationship
+- No direct database access from frontend – all operations via protected FastAPI endpoints
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+## Development Workflow
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### Implementation Process
+- All features must be implemented exactly as defined in /specs folder
+- Every reference in prompts must use @specs/path/to/file.md format
+- Code structure must follow guidelines in root CLAUDE.md, frontend/CLAUDE.md, and backend/CLAUDE.md
+- Frontend uses server components by default with responsive UI using Tailwind CSS
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### Quality Standards
+- All CRUD operations must be fully implemented with proper error handling
+- Responsive frontend with task list, create/edit forms, and authentication pages
+- All code must pass validation and testing requirements
+- Project must run locally with specified commands (docker-compose up or separate npm/uvicorn)
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other development practices and standards for this project. All development activities must comply with these principles. Amendments to this constitution require explicit documentation, approval from project stakeholders, and a migration plan for existing codebase. All pull requests and code reviews must verify compliance with these principles. Use CLAUDE.md files for runtime development guidance and best practices.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-01-05 | **Last Amended**: 2026-01-05
