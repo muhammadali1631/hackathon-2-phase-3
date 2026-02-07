@@ -1,0 +1,144 @@
+# API Contract: Chat Endpoint for AI Todo Chatbot
+
+## Overview
+This document defines the API contract for the chat endpoint that powers the Cohere-based AI chatbot functionality.
+
+## Endpoint: POST /api/{user_id}/chat
+
+### Description
+Processes natural language messages from users and returns AI-generated responses with appropriate tool calls for task management and profile information retrieval.
+
+### Request
+
+#### Path Parameters
+- **user_id** (string, required): The UUID of the authenticated user making the request
+
+#### Headers
+- **Authorization** (string, required): Bearer token containing the user's JWT
+- **Content-Type** (string, required): application/json
+
+#### Body Parameters
+- **message** (string, required): The natural language message from the user
+- **conversation_id** (string, optional): UUID of an existing conversation to continue; if omitted, a new conversation is created
+
+##### Example Request Body
+```json
+{
+  "message": "Add task buy groceries",
+  "conversation_id": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+### Responses
+
+#### 200 Success Response
+- **Description**: Successfully processed the chat message and executed any required tools
+- **Content-Type**: application/json
+
+##### Response Schema
+- **conversation_id** (string): UUID of the conversation (newly created or existing)
+- **response** (string): The AI-generated response to the user
+- **tool_calls** (array): Array of tools that were called during processing
+  - **name** (string): Name of the tool that was called
+  - **arguments** (object): Arguments passed to the tool
+- **timestamp** (string): ISO 8601 timestamp of when the response was generated
+
+##### Example Response
+```json
+{
+  "conversation_id": "550e8400-e29b-41d4-a716-446655440000",
+  "response": "Task 'buy groceries' has been added successfully!",
+  "tool_calls": [
+    {
+      "name": "add_task",
+      "arguments": {
+        "title": "buy groceries",
+        "user_id": "123e4567-e89b-12d3-a456-426614174000"
+      }
+    }
+  ],
+  "timestamp": "2026-02-04T10:30:00Z"
+}
+```
+
+#### 401 Unauthorized
+- **Description**: Invalid or missing authentication token
+- **Content-Type**: application/json
+
+##### Response Schema
+- **error** (string): Error message indicating authentication failure
+- **code** (string): Error code
+
+##### Example Response
+```json
+{
+  "error": "Invalid or missing JWT token",
+  "code": "AUTH_ERROR"
+}
+```
+
+#### 403 Forbidden
+- **Description**: User attempting to access resources that don't belong to them
+- **Content-Type**: application/json
+
+##### Response Schema
+- **error** (string): Error message indicating access violation
+- **code** (string): Error code
+
+##### Example Response
+```json
+{
+  "error": "Access denied: Cannot access this conversation or perform this action",
+  "code": "FORBIDDEN_ACCESS"
+}
+```
+
+#### 400 Bad Request
+- **Description**: Invalid request parameters
+- **Content-Type**: application/json
+
+##### Response Schema
+- **error** (string): Error message indicating the issue
+- **code** (string): Error code
+- **details** (object, optional): Additional details about the validation error
+
+##### Example Response
+```json
+{
+  "error": "Invalid request parameters",
+  "code": "INVALID_PARAMS",
+  "details": {
+    "message": "Message field is required and cannot be empty"
+  }
+}
+```
+
+#### 500 Internal Server Error
+- **Description**: Unexpected server error during processing
+- **Content-Type**: application/json
+
+##### Response Schema
+- **error** (string): Error message indicating the issue
+- **code** (string): Error code
+
+##### Example Response
+```json
+{
+  "error": "An unexpected error occurred while processing your request",
+  "code": "INTERNAL_ERROR"
+}
+```
+
+### Security
+- All requests must include a valid JWT token in the Authorization header
+- The user_id in the path parameter must match the user_id in the JWT token
+- Requests are rate-limited to prevent abuse
+
+### Performance
+- Expected response time: <3 seconds for typical requests
+- Large conversation histories may impact performance; consider truncating to last 20 messages
+
+### Error Handling
+- Client errors (4xx) indicate problems with the request format or authorization
+- Server errors (5xx) indicate issues with the service itself
+- The service should gracefully handle Cohere API failures and return appropriate error messages

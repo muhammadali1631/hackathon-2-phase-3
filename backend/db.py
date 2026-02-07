@@ -1,6 +1,6 @@
 from sqlmodel import create_engine, Session, SQLModel
 from contextlib import contextmanager
-from models import Task, User
+from src.models import Task, User, Conversation, Message
 import os
 from dotenv import load_dotenv
 

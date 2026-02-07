@@ -4,8 +4,8 @@ import { ReactNode } from 'react';
 import { AuthProvider, useAuth } from '@/providers/auth-provider';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { Sidebar } from '@/components/layout/sidebar';
-import { Header } from '@/components/layout/header';
+import { Layout } from '@/components/layout/layout';
+import { LayoutProvider } from '@/providers/layout-provider';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -45,14 +45,10 @@ function ProtectedLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-      <Sidebar />
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-y-auto p-6">
-          {children}
-        </main>
-      </div>
-    </div>
+    <LayoutProvider>
+      <Layout>
+        {children}
+      </Layout>
+    </LayoutProvider>
   );
 }

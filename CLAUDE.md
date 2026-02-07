@@ -212,6 +212,8 @@ See `.specify/memory/constitution.md` for code quality, testing, performance, se
 ## Active Technologies
 - TypeScript with Next.js 16+ (App Router) + Next.js, React, Tailwind CSS, Better Auth, Lucide React icons (001-modern-frontend-ui)
 - N/A (frontend only - data storage handled by backend API) (001-modern-frontend-ui)
+- Python 3.11, TypeScript/JavaScript (Next.js 16+) + FastAPI, Cohere Python SDK, SQLModel, Better Auth, Next.js, React, Tailwind CSS (002-ai-chatbot-cohere)
+- Neon PostgreSQL database with SQLModel ORM (002-ai-chatbot-cohere)
 
 ## Recent Changes
 - 001-modern-frontend-ui: Added TypeScript with Next.js 16+ (App Router) + Next.js, React, Tailwind CSS, Better Auth, Lucide React icons

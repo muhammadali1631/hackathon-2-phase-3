@@ -3,13 +3,13 @@ from sqlmodel import Session
 from typing import List
 from models import Task, TaskCreate, TaskUpdate, TaskResponse, TaskToggleComplete
 from db import get_session_dep
-from auth import get_current_user
+from auth import get_current_user_id
 from datetime import datetime, timezone
 
 router = APIRouter()
 
 @router.post("/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
-def create_task(task: TaskCreate, current_user_id: int = Depends(get_current_user), session: Session = Depends(get_session_dep)):
+def create_task(task: TaskCreate, current_user_id: int = Depends(get_current_user_id), session: Session = Depends(get_session_dep)):
     """Create a new task for the authenticated user"""
     # Create task with user_id from authenticated user
     db_task = Task(
@@ -36,7 +36,7 @@ def create_task(task: TaskCreate, current_user_id: int = Depends(get_current_use
 
 @router.get("/", response_model=List[TaskResponse])
 def get_tasks(
-    current_user_id: int = Depends(get_current_user),
+    current_user_id: int = Depends(get_current_user_id),
     session: Session = Depends(get_session_dep),
     status_filter: str = "all",  # all, pending, completed
     sort: str = "created"  # created, title
@@ -74,7 +74,7 @@ def get_tasks(
     ]
 
 @router.get("/{task_id}", response_model=TaskResponse)
-def get_task(task_id: int, current_user_id: int = Depends(get_current_user), session: Session = Depends(get_session_dep)):
+def get_task(task_id: int, current_user_id: int = Depends(get_current_user_id), session: Session = Depends(get_session_dep)):
     """Get a specific task by ID for the authenticated user"""
     db_task = session.get(Task, task_id)
 
@@ -103,7 +103,7 @@ def get_task(task_id: int, current_user_id: int = Depends(get_current_user), ses
     )
 
 @router.put("/{task_id}", response_model=TaskResponse)
-def update_task(task_id: int, task_update: TaskUpdate, current_user_id: int = Depends(get_current_user), session: Session = Depends(get_session_dep)):
+def update_task(task_id: int, task_update: TaskUpdate, current_user_id: int = Depends(get_current_user_id), session: Session = Depends(get_session_dep)):
     """Update a specific task by ID for the authenticated user"""
     db_task = session.get(Task, task_id)
 
@@ -145,7 +145,7 @@ def update_task(task_id: int, task_update: TaskUpdate, current_user_id: int = De
     )
 
 @router.patch("/{task_id}/complete", response_model=TaskResponse)
-def toggle_task_completion(task_id: int, task_toggle: TaskToggleComplete, current_user_id: int = Depends(get_current_user), session: Session = Depends(get_session_dep)):
+def toggle_task_completion(task_id: int, task_toggle: TaskToggleComplete, current_user_id: int = Depends(get_current_user_id), session: Session = Depends(get_session_dep)):
     """Toggle the completion status of a specific task for the authenticated user"""
     db_task = session.get(Task, task_id)
 
@@ -182,7 +182,7 @@ def toggle_task_completion(task_id: int, task_toggle: TaskToggleComplete, curren
     )
 
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_task(task_id: int, current_user_id: int = Depends(get_current_user), session: Session = Depends(get_session_dep)):
+def delete_task(task_id: int, current_user_id: int = Depends(get_current_user_id), session: Session = Depends(get_session_dep)):
     """Delete a specific task by ID for the authenticated user"""
     task = session.get(Task, task_id)
 

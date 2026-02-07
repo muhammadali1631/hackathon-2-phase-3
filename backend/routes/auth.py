@@ -4,12 +4,16 @@ from typing import Optional
 from datetime import datetime, timedelta, timezone
 import jwt
 import os
+import bcrypt
 from dotenv import load_dotenv
 
 from models import User, UserCreate, UserSignIn, UserResponse, TokenResponse, UserProfileResponse, AuthResponse
 from db import get_session_dep
-from models import pwd_context
-from auth import get_current_user
+import sys
+import os
+# Add the parent directory to the path to allow importing from the parent directory
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from auth import get_current_user_id
 
 # Load environment variables
 load_dotenv()
@@ -25,11 +29,18 @@ def hash_password(password: str) -> str:
     # Truncate if needed to avoid bcrypt errors
     if len(password.encode('utf-8')) > 72:
         password = password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
-    return pwd_context.hash(password)
+    # Ensure password is properly truncated to avoid bcrypt length issues
+    password = password[:72]  # Additional safety truncation
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed.decode('utf-8')
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a plain password against a hashed password"""
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+    except:
+        return False
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     """Create a JWT access token"""
@@ -70,7 +81,7 @@ def signup(user: UserCreate, session: Session = Depends(get_session_dep)):
 
     # Create JWT token for the new user
     token_data = {
-        "sub": db_user.id,
+        "sub": str(db_user.id),  # Ensure sub is a string as per JWT specification
         "email": db_user.email
     }
 
@@ -103,7 +114,7 @@ def signin(user_credentials: UserSignIn, session: Session = Depends(get_session_
 
     # Create JWT token with user info
     token_data = {
-        "sub": user.id,
+        "sub": str(user.id),  # Ensure sub is a string as per JWT specification
         "email": user.email
     }
 
@@ -121,7 +132,7 @@ def signin(user_credentials: UserSignIn, session: Session = Depends(get_session_
     )
 
 @router.get("/me", response_model=UserProfileResponse)
-def get_current_user_profile(current_user_id: int = Depends(get_current_user), session: Session = Depends(get_session_dep)):
+def get_current_user_profile(current_user_id: int = Depends(get_current_user_id), session: Session = Depends(get_session_dep)):
     """Get the current authenticated user's profile information"""
     # Find user by ID from JWT token
     user = session.get(User, current_user_id)

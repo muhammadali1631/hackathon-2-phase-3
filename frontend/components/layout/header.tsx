@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Menu, Bell, User } from 'lucide-react';
 import { useAuth } from '@/providers/auth-provider';
+import { useLayout } from '@/providers/layout-provider';
 
 export function Header() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { toggleSidebar, openSidebar } = useLayout();
   const { user } = useAuth();
 
   return (
@@ -16,7 +16,7 @@ export function Header() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setSidebarOpen(true)}
+            onClick={openSidebar}
             className="lg:hidden mr-2 text-gray-300 hover:bg-gray-700"
           >
             <Menu className="h-6 w-6" />
