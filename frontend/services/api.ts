@@ -1,5 +1,5 @@
 // API Configuration
-export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://alishahzad32-todo-phase-3.hf.space';
 
 // Utility function to get auth token
 export const getAuthToken = (): string | null => {
